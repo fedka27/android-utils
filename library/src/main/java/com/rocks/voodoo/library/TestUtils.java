@@ -1,4 +1,4 @@
-package com.rocks.voodoo.utils;
+package com.rocks.voodoo.library;
 
 import android.content.Context;
 
