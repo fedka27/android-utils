@@ -1,19 +1,32 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
+
+    ext.your_email = 'energyv37@yandex.ru'
+    ext.your_github_name = 'fedka27'
+
+    ext.project_name = 'voodoo-rocks-library'
+    ext.project_description = 'Library for the team'
+    ext.project_group = 'trubs'
+    ext.project_artifact = 'voodoo-rocks-library'
+    ext.project_version = '0.0.7'
 
     repositories {
         mavenCentral()
         jcenter()
         google()
-        maven { url 'https://dl.bintray.com/trubs/maven' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
+
     }
 }
+
+plugins {
+    id "com.jfrog.bintray" version "1.7"
+}
+
+group project_group
+version project_version
+
 
 allprojects {
     repositories {
@@ -21,8 +34,55 @@ allprojects {
         jcenter()
         google()
     }
+
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+task sourceJar(type: Jar) {
+    classifier "sources"
 }
+
+publishing {
+
+    publications {
+        maven(MavenPublication) {
+            groupId project_group
+            artifactId project_artifact
+            artifact sourceJar
+            artifact source: sourceJar, classifier: 'src', extension: 'zip'
+            version project_version
+        }
+
+    }
+}
+
+bintray {
+    user = 'trubs'
+    key = '391d37ad843d5663c5764a0d2102d6be812604cc'
+    publications = ['maven']
+    pkg {
+        repo = 'maven'
+        name = project_name
+        desc = project_description
+        licenses = ['Unlicense']
+        publicDownloadNumbers = true
+        websiteUrl = "https://github.com/$your_github_name/$project_name"
+        issueTrackerUrl = "https://github.com/$your_github_name/$project_name/issues"
+        vcsUrl = "https://github.com/$your_github_name/${project_name}.git"
+        githubRepo = "$your_github_name/$project_name"
+        version {
+            name = project_version
+            vcsTag = project_version
+            gpg {
+                sign = true
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+

@@ -1,4 +1,4 @@
-package com.rocks.voodoo.library;
+package com.rocks.voodoo.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

@@ -1,4 +1,4 @@
-package com.rocks.voodoo.library;
+package com.rocks.voodoo.utils;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.rocks.voodoo.library.test", appContext.getPackageName());
+        assertEquals("com.rocks.voodoo.utils.test", appContext.getPackageName());
     }
 }
