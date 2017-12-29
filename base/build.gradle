@@ -2,23 +2,23 @@ apply plugin: 'com.android.library'
 
 ext {
     bintrayRepo = 'maven'
-    bintrayName = 'base-library'   // Has to be same as your library module name
+    bintrayName = 'base'   // Has to be same as your library module name
 
-    publishedGroupId = 'com.rocks.voodoo.library'
-    libraryName = 'Base Voodoo Rocks Library'
+    publishedGroupId = 'com.github.fedka27'
+    libraryName = 'base'
     artifact = 'base'     // Has to be same as your library module name
 
-    libraryDescription = 'Base core of the Voodoo'
+    libraryDescription = ''
 
     // Your github repo link
-    siteUrl = 'https://github.com/fedka27/voodoo-base'
-    gitUrl = 'https://github.com/fedka27/voodoo-base.git'
-    githubRepository= 'fedka27/voodoo-base'
+    siteUrl = 'https://github.com/fedka27/test-voodoo-rocks-library'
+    gitUrl = 'https://github.com/fedka27/test-voodoo-rocks-library.git'
+    githubRepository= 'fedka27/test-voodoo-rocks-library'
 
     libraryVersion = '0.0.1'
 
     developerId = 'trubs'
-    developerName = 'Trubitsyn Fedya'
+    developerName = 'Fedya Trubitsyn'
     developerEmail = 'energyv37@yandex.ru'
 
     licenseName = 'The Apache Software License, Version 2.0'
