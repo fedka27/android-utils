@@ -7,7 +7,7 @@ buildscript {
     ext.project_description = 'Library for the team'
     ext.project_group = 'trubs'
     ext.project_artifact = 'voodoo-rocks-library'
-    ext.project_version = '0.0.7'
+    ext.project_version = '0.1.2'
 
     repositories {
         mavenCentral()
