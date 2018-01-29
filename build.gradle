@@ -1,11 +1,12 @@
 buildscript {
     ext.project_group = 'utils'
-    ext.project_version = '0.1.3'
+    ext.project_version = '0.1.5'
 
     repositories {
         mavenCentral()
         jcenter()
         google()
+        maven { url 'https://jitpack.io' }
 
     }
     dependencies {
@@ -24,11 +25,6 @@ allprojects {
         google()
         maven { url 'https://jitpack.io' }
     }
-
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish'
-
-
 }
 
 repositories {
