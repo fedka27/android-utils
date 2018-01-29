@@ -1,12 +1,5 @@
 buildscript {
-
-    ext.your_email = 'energyv37@yandex.ru'
-    ext.your_github_name = 'fedka27'
-
-    ext.project_name = 'voodoo-rocks-android-utils'
-    ext.project_description = 'Library for the team'
-    ext.project_group = 'trubs'
-    ext.project_artifact = 'voodoo-rocks-android-utils'
+    ext.project_group = 'utils'
     ext.project_version = '0.1.3'
 
     repositories {
@@ -17,17 +10,11 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
-
     }
 }
 
-plugins {
-    id "com.jfrog.bintray" version "1.8.0"
-}
 
 allprojects {
-
     group project_group
     version project_version
 
@@ -36,59 +23,12 @@ allprojects {
         jcenter()
         google()
         maven { url 'https://jitpack.io' }
-        maven {
-            url "https://dl.bintray.com/trubs/maven"
-        }
     }
 
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
 
 
-}
-
-publishing {
-
-    publications {
-        maven(MavenPublication) {
-
-            pom.withXml {
-                // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
-                configurations.compile.allDependencies.each {
-                    // Ensure dependencies such as fileTree are not included.
-                    def dependencyNode = dependenciesNode.appendNode('dependency')
-                    dependencyNode.appendNode('groupId', project_group)
-                    dependencyNode.appendNode('artifactId', project_artifact)
-                    dependencyNode.appendNode('version', project_version)
-                }
-            }
-        }
-
-    }
-}
-
-bintray {
-    user = 'trubs'
-    key = '391d37ad843d5663c5764a0d2102d6be812604cc'
-    publications = ['maven']
-    pkg {
-        repo = 'maven'
-        name = project_name
-        desc = project_description
-        licenses = ['Unlicense']
-        publicDownloadNumbers = true
-        websiteUrl = "https://github.com/$your_github_name/$project_name"
-        issueTrackerUrl = "https://github.com/$your_github_name/$project_name/issues"
-        vcsUrl = "https://github.com/$your_github_name/${project_name}.git"
-        githubRepo = "$your_github_name/$project_name"
-        version {
-            name = project_version
-            vcsTag = project_version
-            gpg {
-                sign = true
-            }
-        }
-    }
 }
 
 repositories {

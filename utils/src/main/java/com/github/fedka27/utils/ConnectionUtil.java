@@ -1,4 +1,4 @@
-package com.rocks.voodoo.utils;
+package com.github.fedka27.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

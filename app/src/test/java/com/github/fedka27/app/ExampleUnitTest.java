@@ -1,4 +1,4 @@
-package com.rocks.voodoo.app;
+package com.github.fedka27.app;
 
 import org.junit.Test;
 
