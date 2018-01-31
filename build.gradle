@@ -1,5 +1,5 @@
 buildscript {
-    ext.project_group = 'utils'
+    ext.project_group = 'android-utils'
     ext.project_version = '0.1.5'
 
     repositories {

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">download-service</string>
+    <string name="notification_progress">%d%% \/ 100%%</string>
+</resources>

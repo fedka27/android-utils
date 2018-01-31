@@ -1,1 +1,1 @@
-include ':app', ':utils', ':billing'
+include ':app', ':utils', ':billing', ':download-service'
