@@ -30,16 +30,16 @@ public abstract class DownloadItem implements Serializable {
         return isDownloading;
     }
 
-    final public void setDownloading(boolean downloading) {
+    final protected void setDownloading(boolean downloading) {
         isDownloading = downloading;
     }
+
+    /*Setters*/
 
     final public String getFilepath() {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
                 File.separator + getFilename();
     }
-
-    /*Setters*/
 
     final public String getDownloadUrl() {
         return downloadUrl;

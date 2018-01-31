@@ -1,5 +1,7 @@
 package com.github.fedka27.download.service;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -7,9 +9,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.support.annotation.StringDef;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -26,13 +32,24 @@ public class DownloadService<T extends DownloadItem> extends IntentService {
     public static final String ACTION_STARTED = "DownloadService.STARTED";
     public static final String ACTION_PROGRESS = "DownloadService.PROCESSING";
     public static final String ACTION_COMPLETE = "DownloadService.COMPLETE";
+    public static final String ACTION_CANCEL = "DownloadService.COMPLETE";
     public static final String ACTION_ERROR = "DownloadService.ERROR";
     private static final String TAG = DownloadService.class.getSimpleName();
+    private static final String PERMISSION_STORAGE_READ = Manifest.permission.READ_EXTERNAL_STORAGE;
+    private static final String PERMISSION_STORAGE_WRITE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    private static final String[] PERMISSIONS_STORAGE = new String[]{PERMISSION_STORAGE_READ, PERMISSION_STORAGE_WRITE};
+    private static final int PERMISSION_REQUEST_CODE = 765;
+
     private static final String EXTRA_DATA = TAG + "_DATA";
     private static final String EXTRA_DOWNLOAD = TAG + "_DOWNLOAD";
     private static final String EXTRA_ERROR = TAG + "_ERROR";
 
+    private static final String EXTRA_NOTIFICATION_ID = TAG + "notification_id";
+
     private Set<DownloadServiceListener<T>> downloaditemListeners = new HashSet<>();
+
+    private NotificationCompat.Builder notificationBuilder;
+    private NotificationManager notificationManager;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -48,6 +65,7 @@ public class DownloadService<T extends DownloadItem> extends IntentService {
                 for (DownloadServiceListener<T> itemListener : downloaditemListeners) {
                     itemListener.onStarted(item);
                 }
+                return;
             }
 
             if (intent.getAction().equals(ACTION_PROGRESS)) {
@@ -55,12 +73,14 @@ public class DownloadService<T extends DownloadItem> extends IntentService {
                 for (DownloadServiceListener<T> itemListener : downloaditemListeners) {
                     itemListener.onProgress(item, download);
                 }
+                return;
             }
 
             if (intent.getAction().equals(ACTION_COMPLETE)) {
                 for (DownloadServiceListener<T> itemListener : downloaditemListeners) {
                     itemListener.onComplete(item);
                 }
+                return;
             }
 
             if (intent.getAction().equals(ACTION_ERROR)) {
@@ -69,13 +89,22 @@ public class DownloadService<T extends DownloadItem> extends IntentService {
                 for (DownloadServiceListener<T> itemListener : downloaditemListeners) {
                     itemListener.onError(item, throwable);
                 }
+                return;
+            }
+
+            if (intent.getAction().equals(ACTION_CANCEL)) {
+                Log.d(TAG, "Canceled");
+                stopSelf();
+                notificationManager.cancel(intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1));
+
+                File file = new File(item.getFilepath());
+                if (file.exists()) {
+                    file.delete();
+                }
+                return;
             }
         }
     };
-
-    private NotificationCompat.Builder notificationBuilder;
-    private NotificationManager notificationManager;
-    private int ID = 111;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -87,10 +116,35 @@ public class DownloadService<T extends DownloadItem> extends IntentService {
         setIntentRedelivery(true);
     }
 
-    public void startService(Context context, T item) {
-        Intent intent = new Intent(context, DownloadService.class);
+    public void startDownloading(Activity activity, T item) {
+
+        if (ContextCompat.checkSelfPermission(activity, PERMISSION_STORAGE_READ) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(activity, PERMISSION_STORAGE_WRITE) == PackageManager.PERMISSION_GRANTED) {
+
+            startPermissionGranted(activity, item);
+        } else {
+            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, PERMISSION_REQUEST_CODE);
+        }
+
+    }
+
+    private void startPermissionGranted(Activity activity, T item) {
+        Intent intent = new Intent(activity, DownloadService.class);
         intent.putExtra(EXTRA_DATA, item);
-        context.startService(intent);
+        activity.startService(intent);
+    }
+
+    public void onRequestPermissionResult(Activity activity, T item, int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE: {
+                for (int result : grantResults) {
+                    if (result != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                }
+                startPermissionGranted(activity, item);
+            }
+        }
     }
 
     public void registerListener(Context context, DownloadServiceListener<T> listener) {
@@ -113,13 +167,21 @@ public class DownloadService<T extends DownloadItem> extends IntentService {
 
         T item = (T) intent.getSerializableExtra(EXTRA_DATA);
 
-        ID = item.getNotificationId();
+        int ID = item.getNotificationId();
+
+        PendingIntent pendingIntentCancel = PendingIntent.getService(this,
+                0,
+                new Intent(ACTION_CANCEL)
+                        .putExtra(EXTRA_NOTIFICATION_ID, ID)
+                        .putExtra(EXTRA_DATA, item),
+                PendingIntent.FLAG_CANCEL_CURRENT);
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(android.R.drawable.stat_sys_download)
-                .setContentTitle(item.getFilename())
+                .setSubText(item.getFilename())
+                .addAction(R.drawable.ic_close, getString(R.string.notification_cancel), pendingIntentCancel)
                 .setOngoing(true)
                 .setAutoCancel(false);
         notificationManager.notify(ID, notificationBuilder.build());
@@ -135,7 +197,7 @@ public class DownloadService<T extends DownloadItem> extends IntentService {
 
             item.setDownloading(false);
 
-            notificationManager.cancel(ID);
+            notificationManager.cancel(item.getNotificationId());
 
             sendActionIntentError(item, e);
         }
@@ -209,8 +271,8 @@ public class DownloadService<T extends DownloadItem> extends IntentService {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         notificationBuilder.setProgress(100, download.getProgress(), false);
-        notificationBuilder.setSubText(getString(R.string.notification_progress, download.getProgress()));
-        notificationManager.notify(ID, notificationBuilder.build());
+        notificationBuilder.setContentText(getString(R.string.notification_progress, download.getProgress()));
+        notificationManager.notify(item.getNotificationId(), notificationBuilder.build());
     }
 
     private void sendActionIntent(@Actions String action, T item) {
@@ -228,11 +290,13 @@ public class DownloadService<T extends DownloadItem> extends IntentService {
 
     private void onDownloadComplete(T item) {
 
+        int id = item.getNotificationId();
+
         item.setDownloading(false);
 
         sendActionIntent(ACTION_COMPLETE, item);
 
-        notificationManager.cancel(ID);
+        notificationManager.cancel(id);
         notificationBuilder.setProgress(0, 0, false);
         notificationBuilder.setContentText("File Downloaded");
         notificationBuilder.setSmallIcon(android.R.drawable.stat_sys_download_done);
@@ -240,15 +304,9 @@ public class DownloadService<T extends DownloadItem> extends IntentService {
         notificationBuilder.setAutoCancel(true);
         notificationBuilder.setContentIntent(PendingIntent
                 .getActivity(this, 0, item.getIntent(this), 0));
-        notificationManager.notify(ID, notificationBuilder.build());
+        notificationManager.notify(id, notificationBuilder.build());
 
     }
-
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        notificationManager.cancel(ID);
-    }
-
 
     @StringDef({ACTION_STARTED, ACTION_PROGRESS, ACTION_COMPLETE, ACTION_ERROR})
     private @interface Actions {
