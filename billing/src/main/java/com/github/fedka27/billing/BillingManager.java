@@ -3,6 +3,7 @@ package com.github.fedka27.billing;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.billingclient.api.BillingClient;
@@ -113,15 +114,27 @@ public class BillingManager implements PurchasesUpdatedListener {
     /**
      * Start a purchase or subscription replace flow
      */
-    public void initiatePurchaseFlow(final String skuId, final ArrayList<String> oldSkus,
+    public void initiatePurchaseFlow(final String skuId,
+                                     @Nullable final ArrayList<String> oldSkus,
                                      final @SkuType String billingType,
                                      PurchasesUpdatedListener purchasesUpdatedListener
     ) {
         this.purchasesUpdatedListener = purchasesUpdatedListener;
+
+        @Nullable ArrayList<String> subs;
+        if (oldSkus != null && oldSkus.isEmpty()) {
+            Log.e(TAG, "WARNING Please fix the input params. OldSkus size can't be 0");
+            subs = null;
+        } else {
+            subs = oldSkus;
+        }
+
         Runnable purchaseFlowRequest = () -> {
-            Log.d(TAG, "Launching in-app purchase flow. Replace old SKU? " + (oldSkus != null));
+            Log.d(TAG, "Launching in-app purchase flow. Replace old SKU? " + (subs != null));
+
             BillingFlowParams purchaseParams = BillingFlowParams.newBuilder()
-                    .setSku(skuId).setType(billingType).setOldSkus(oldSkus).build();
+                    .setSku(skuId).setType(billingType).setOldSkus(subs).build();
+
             mBillingClient.launchBillingFlow(mActivity, purchaseParams);
         };
 
