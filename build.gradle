@@ -1,7 +1,4 @@
 buildscript {
-    ext.project_group = 'android-utils'
-    ext.project_version = '0.1.5'
-
     repositories {
         mavenCentral()
         jcenter()
@@ -11,13 +8,20 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
+
+        // For the library uploading to the Bintray
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
 
+def isReleaseBuild() {
+    return version.contains("SNAPSHOT") == false
+}
 
 allprojects {
-    group project_group
-    version project_version
+    group = GROUP
+    version = VERSION_NAME
 
     repositories {
         mavenCentral()
@@ -30,4 +34,3 @@ allprojects {
 repositories {
     mavenCentral()
 }
-

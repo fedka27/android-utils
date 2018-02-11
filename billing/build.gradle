@@ -38,3 +38,6 @@ dependencies {
 
     implementation 'com.android.billingclient:billing:1.0'
 }
+
+apply from: '../maven_push.gradle'
+

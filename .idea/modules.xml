@@ -3,15 +3,14 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://A:\dev\projects\voodoo-rocks-android-utils\VoodooRocksLibrary.iml" filepath="A:\dev\projects\voodoo-rocks-android-utils\VoodooRocksLibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android-utils.iml" filepath="$PROJECT_DIR$/android-utils.iml" />
+      <module fileurl="file://A:\dev\projects\voodoo-rocks-android-utils\android-utils.iml" filepath="A:\dev\projects\voodoo-rocks-android-utils\android-utils.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://A:\dev\projects\voodoo-rocks-android-utils\app\app.iml" filepath="A:\dev\projects\voodoo-rocks-android-utils\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/billing/billing.iml" filepath="$PROJECT_DIR$/billing/billing.iml" />
       <module fileurl="file://$PROJECT_DIR$/download-service/download-service.iml" filepath="$PROJECT_DIR$/download-service/download-service.iml" />
+      <module fileurl="file://A:\dev\projects\voodoo-rocks-android-utils\download-service\download-service.iml" filepath="A:\dev\projects\voodoo-rocks-android-utils\download-service\download-service.iml" />
       <module fileurl="file://A:\dev\projects\voodoo-rocks-android-utils\base\library.iml" filepath="A:\dev\projects\voodoo-rocks-android-utils\base\library.iml" />
       <module fileurl="file://$PROJECT_DIR$/utils/utils.iml" filepath="$PROJECT_DIR$/utils/utils.iml" />
-      <module fileurl="file://A:\dev\projects\voodoo-rocks-android-utils\utils\utils.iml" filepath="A:\dev\projects\voodoo-rocks-android-utils\utils\utils.iml" />
-      <module fileurl="file://$PROJECT_DIR$/utils.iml" filepath="$PROJECT_DIR$/utils.iml" />
+      <module fileurl="file://A:\dev\projects\voodoo-rocks-android-utils\utils.iml" filepath="A:\dev\projects\voodoo-rocks-android-utils\utils.iml" />
       <module fileurl="file://$PROJECT_DIR$/voodoo-rocks-android-utils.iml" filepath="$PROJECT_DIR$/voodoo-rocks-android-utils.iml" />
     </modules>
   </component>
