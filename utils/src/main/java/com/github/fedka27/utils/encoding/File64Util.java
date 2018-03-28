@@ -1,4 +1,4 @@
-package com.github.fedka27.utils;
+package com.github.fedka27.utils.encoding;
 
 import android.content.ContentResolver;
 import android.content.Context;

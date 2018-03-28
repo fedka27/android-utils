@@ -3,6 +3,8 @@ package com.github.fedka27.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.github.fedka27.utils.encoding.Bitmap64Util;
+
 import org.junit.Assert;
 import org.junit.Test;
 

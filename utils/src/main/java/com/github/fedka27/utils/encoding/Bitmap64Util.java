@@ -1,4 +1,4 @@
-package com.github.fedka27.utils;
+package com.github.fedka27.utils.encoding;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +13,8 @@ import java.io.InputStreamReader;
 public class Bitmap64Util {
     /**
      * Encode image to base64
+     *
+     * Not recommended use in Main thread
      *
      * @return String base64
      */
